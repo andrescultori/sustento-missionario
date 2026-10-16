@@ -6,6 +6,8 @@ Protótipo clicável de um app para missionários cuidarem dos seus mantenedores
 
 👉 **Experimente:** https://andrescultori.github.io/sustento-missionario/
 
+📝 **Pré-cadastro (teste de interesse):** https://tally.so/r/rDy2AM — o link só funciona depois que o formulário for publicado.
+
 ## Como é feito
 
 Um único arquivo estático, `docs/index.html` (HTML + CSS + JS puro, PT/EN, tema claro/escuro). Sem build, sem dependências, sem backend. O GitHub Pages serve a pasta `docs/` da branch `main`.
