@@ -1,0 +1,778 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<title>Sustento Missionário</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
+<style>
+/* Layout (igual ao mockup): menu lateral verde + conteúdo em cartões; no celular o menu vira uma faixa no topo */
+:root{
+  --bg:#F3F6F4; --card:#FFFFFF; --ink:#14201C; --mute:#5B6B65; --line:#DDE5E1;
+  --pri:#0F5C4D; --pri-ink:#FFFFFF; --pri-soft:#A9CFC5; --warn:#8A5A0B; --warn-bg:#FDF3DC; --warn-line:#F0DDB0;
+  --side:#0F5C4D; --side-ink:#FFFFFF; --side-mute:#CFE5DE; --side-hl:rgba(255,255,255,0.16);
+  --font:'Plus Jakarta Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E1613; --card:#16211D; --ink:#E8F0EC; --mute:#9DB0A8; --line:#263530;
+    --pri:#4FB89F; --pri-ink:#07261F; --pri-soft:#2C5A4E; --warn:#E2B259; --warn-bg:#2B2412; --warn-line:#4A3D1A;
+    --side:#0B3F35; --side-ink:#FFFFFF; --side-mute:#B7D6CC; --side-hl:rgba(255,255,255,0.14); color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E1613; --card:#16211D; --ink:#E8F0EC; --mute:#9DB0A8; --line:#263530;
+  --pri:#4FB89F; --pri-ink:#07261F; --pri-soft:#2C5A4E; --warn:#E2B259; --warn-bg:#2B2412; --warn-line:#4A3D1A;
+  --side:#0B3F35; --side-ink:#FFFFFF; --side-mute:#B7D6CC; --side-hl:rgba(255,255,255,0.14); color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{max-width:100%;overflow-x:hidden}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);font-size:15px;line-height:1.5}
+/* Faixa fixa só cobre a área do recorte/barra de status; o espaço dessa área é somado UMA vez, no padding-top do menu */
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--side)}
+.app{display:flex;flex-wrap:wrap;align-content:flex-start;min-height:100vh;max-width:100%}
+aside.side{flex:0 0 248px;align-self:stretch;min-width:0;max-width:100%;background:var(--side);color:var(--side-ink);display:flex;flex-direction:column;gap:28px;padding-top:calc(28px + env(safe-area-inset-top,0px));padding-bottom:calc(28px + env(safe-area-inset-bottom,0px));padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:16px}
+.brand{padding:0 12px}
+.brand b{display:block;font-size:22px;font-weight:700}
+.brand span{font-size:13px;color:var(--side-mute)}
+nav.menu{display:flex;flex-direction:column;gap:4px;min-width:0;max-width:100%}
+nav.menu button{display:block;width:100%;text-align:left;border:0;background:transparent;color:var(--side-mute);font:inherit;padding:10px 12px;border-radius:8px;cursor:pointer}
+nav.menu button[aria-current="page"]{background:var(--side-hl);color:var(--side-ink);font-weight:600}
+.count{display:inline-block;min-width:20px;margin-left:8px;padding:0 6px;border-radius:10px;background:var(--warn-bg);color:var(--warn);font-size:12px;text-align:center;font-weight:600}
+.userbox{margin-top:auto;padding:0 12px;display:flex;flex-direction:column;gap:8px;font-size:13px;color:var(--side-mute)}
+.userbox b{color:var(--side-ink);font-size:15px}
+.tag{align-self:flex-start;font-size:12px;font-weight:600;padding:3px 10px;border-radius:12px;background:var(--warn-bg);color:var(--warn)}
+.seg{display:inline-flex;align-self:flex-start;border:1px solid rgba(255,255,255,.35);border-radius:8px;overflow:hidden}
+.seg button{border:0;background:transparent;color:var(--side-mute);font:inherit;font-size:13px;font-weight:600;padding:5px 12px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--side-ink);color:var(--side)}
+main{flex:999 1 min(100%,560px);min-width:0;display:flex;flex-direction:column;gap:24px;padding-top:32px;padding-bottom:calc(48px + env(safe-area-inset-bottom,0px));padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+@media (min-width:808px){main{padding-top:calc(32px + env(safe-area-inset-top,0px))}}
+@media (min-width:900px){main{padding-left:40px;padding-right:max(40px,env(safe-area-inset-right,0px))}}
+@media (max-width:807px){
+  aside.side{flex-basis:100%;gap:10px;padding-top:calc(12px + env(safe-area-inset-top,0px));padding-bottom:12px;padding-right:max(16px,env(safe-area-inset-right,0px))}
+  nav.menu{flex-direction:row;overflow-x:auto;width:100%}
+  .brand b{font-size:20px}
+  nav.menu button{width:auto;white-space:nowrap}
+  .userbox{margin-top:0;flex-direction:row;flex-wrap:wrap;align-items:center;gap:8px 12px}
+  .userbox .who{display:none}
+}
+h1{margin:0;font-size:28px;line-height:1.2;font-weight:700;text-wrap:balance}
+h2{margin:0;font-size:18px;text-wrap:balance}
+h3{margin:0;font-size:15px}
+.sub{color:var(--mute);margin-top:4px}
+.back{color:var(--mute);font-size:14px;background:none;border:0;padding:0;font:inherit;font-size:14px;cursor:pointer;text-align:left}
+.head{display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:24px;display:flex;flex-direction:column;gap:16px;min-width:0}
+.card.warn{background:var(--warn-bg);border-color:var(--warn-line)}
+.card.warn h2{color:var(--warn)}
+.row{display:flex;flex-wrap:wrap;gap:16px;align-items:stretch}
+.row>*{flex:1 1 min(100%,380px);min-width:0}
+.row.top{align-items:flex-start}
+.stats{display:flex;flex-wrap:wrap;gap:16px}
+.stats>div{flex:1 1 min(100%,240px);background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.stats .k{font-size:13px;color:var(--mute)}
+.stats .v{font-size:32px;font-weight:700;line-height:1.15;font-variant-numeric:tabular-nums}
+.stats .n{font-size:13px;color:var(--mute)}
+.stats .w{background:var(--warn-bg);border-color:var(--warn-line)}
+.stats .w .k,.stats .w .v,.stats .w .n{color:var(--warn)}
+.stats .w .k{font-weight:600}
+.pms{display:flex;flex-wrap:wrap;gap:24px}
+.pms>div{flex:1 1 min(100%,240px);display:flex;flex-direction:column;gap:8px;min-width:0}
+.pms .k{font-size:13px;color:var(--mute)}
+.pms .v{font-size:28px;font-weight:700;line-height:1.15;font-variant-numeric:tabular-nums}
+.pms .n{font-size:13px;color:var(--mute)}
+.meter{height:8px;border-radius:4px;background:var(--line);overflow:hidden}
+.meter i{display:block;height:100%;background:var(--pri)}
+.meter.soft i{background:var(--pri-soft)}
+.btn{display:inline-block;border:1px solid var(--pri);background:var(--pri);color:var(--pri-ink);font:inherit;font-weight:600;padding:12px 20px;border-radius:10px;cursor:pointer;text-decoration:none;min-height:44px}
+.btn.ghost{background:transparent;color:var(--pri)}
+.btn.plain{background:var(--card);color:var(--ink);border-color:var(--line)}
+.btn.small{padding:8px 14px;min-height:40px;font-size:14px;border-radius:8px}
+.btn[disabled]{opacity:.5;cursor:not-allowed}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--pri);outline-offset:2px}
+.list{display:flex;flex-direction:column}
+.item{display:flex;gap:12px;align-items:center;justify-content:space-between;padding:12px 0;border-top:1px solid var(--line)}
+.item:first-child{border-top:0}
+.item>div:first-child{min-width:0}
+.item .t{font-weight:600;overflow-wrap:anywhere}
+.item .m{font-size:13px;color:var(--mute)}
+.bars{display:flex;align-items:flex-end;gap:16px;height:190px;padding-top:8px}
+.bars div{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:6px;height:100%;min-width:0}
+.bars em{font-style:normal;font-size:12px;color:var(--mute);font-variant-numeric:tabular-nums}
+.bars i{display:block;width:100%;background:var(--pri-soft);border-radius:6px 6px 0 0}
+.bars span{font-size:13px}
+.bars .cur i{background:var(--pri)}
+.bars .cur em{color:var(--ink);font-weight:600}
+.bars .cur span{font-weight:600}
+.scroll{overflow-x:auto}
+table{width:100%;min-width:560px;border-collapse:collapse;text-align:left}
+th{font-size:13px;font-weight:500;color:var(--mute);padding:10px 12px 10px 0}
+td{padding:14px 12px 14px 0;border-top:1px solid var(--line);vertical-align:top}
+tr.bad td{background:var(--warn-bg)}
+tr.sum td{font-weight:700}
+.ok{color:var(--pri);font-weight:600}
+.no{color:var(--warn);font-weight:600}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit;font-size:14px;padding:8px 14px;border-radius:20px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--pri);color:var(--pri-ink);border-color:var(--pri);font-weight:600}
+.var{padding:4px 10px;border-radius:12px;background:var(--bg);border:1px solid var(--line);font-size:13px;color:var(--mute)}
+label{font-size:14px;font-weight:600}
+input,select,textarea{width:100%;font:inherit;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 14px;min-height:46px}
+textarea{resize:vertical;line-height:1.5}
+input[type=checkbox],input[type=radio]{width:20px;height:20px;min-height:0;padding:0;accent-color:var(--pri)}
+.f{display:flex;flex-direction:column;gap:6px;min-width:0}
+.fr{display:flex;flex-wrap:wrap;gap:16px}
+.fr>.f{flex:1 1 min(100%,200px);min-width:0}
+.fr.four>.f{flex-basis:150px}
+.fr.goal>.f{flex:0 1 170px}
+.chk,.opt{display:flex;gap:10px;align-items:flex-start}
+.chk label,.opt label{font-weight:400;line-height:1.5}
+.opt small{display:block;color:var(--mute);font-size:14px}
+.mail{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:20px;font-size:14px;display:flex;flex-direction:column;gap:10px;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.5}
+.mail .h{color:var(--mute)}
+.acts{display:flex;flex-wrap:wrap;gap:12px;justify-content:flex-end}
+.acts.left{justify-content:flex-start}
+.facts{color:var(--mute);font-size:14px;line-height:1.7}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:max(16px,env(safe-area-inset-bottom,0px));z-index:50;background:var(--ink);color:var(--bg);padding:12px 18px;border-radius:10px;font-weight:600;max-width:calc(100% - 32px)}
+.note{font-size:13px;color:var(--mute)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+/* Relatório mensal: impressão / salvar PDF */
+@media print{
+  @page{margin:14mm}
+  :root:root:root{--bg:#fff;--card:#fff;--ink:#000;--mute:#333;--line:#bbb;--pri:#0F5C4D;--pri-soft:#7fb3a6;--warn:#6b4306;--warn-bg:#fff;--warn-line:#bbb;color-scheme:light}
+  body{background:#fff;color:#000;font-size:12px}
+  body::before,aside.side,.toast,.noprint{display:none!important}
+  html,body{overflow:visible}
+  .app{display:block;min-height:0}
+  main{padding:0;gap:14px}
+  .card,.stats>div{break-inside:avoid;border-color:#bbb}
+  .scroll{overflow:visible}
+  table{min-width:0;font-size:12px}
+  tr{break-inside:avoid}
+  h1{font-size:22px}
+  .meter{border:1px solid #bbb}
+  .meter i{background:#555!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+</style>
+</head>
+<body>
+
+<div class="app">
+  <aside class="side">
+    <div class="brand"><b>Sustento</b><span id="sub"></span></div>
+    <nav class="menu" id="menu" aria-label="Seções"></nav>
+    <div class="userbox">
+      <span class="tag" id="badge"></span>
+      <div class="who"><b>Rafael Duarte</b><div id="role"></div></div>
+      <div class="seg" role="group" aria-label="Idioma / Language">
+        <button type="button" data-a="lang" data-v="pt" id="l-pt">PT</button>
+        <button type="button" data-a="lang" data-v="en" id="l-en">EN</button>
+      </div>
+    </div>
+  </aside>
+  <main id="view"></main>
+</div>
+<div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+
+<script>
+(function(){
+"use strict";
+var FEEDBACK_URL = "https://tally.so/r/bZVNZZ"; /* formulário de pré-cadastro (Tally); vazio = botão oculto. Só funciona depois de publicado. */
+var I = {
+ pt:{sub:"nome provisório",badge:"Protótipo · dados de exemplo",role:"Missionário",reset:"Restaurar exemplo",
+  home:"Painel",sup:"Mantenedores",off:"Ofertas",thx:"Agradecimentos",imp:"Importar",rep:"Relatório",set:"Configurações",
+  gm:"Bom dia",ga:"Boa tarde",gn:"Boa noite",summary:"Resumo de ",
+  intro_t:"Protótipo para você testar",intro_p:"Tudo aqui é de exemplo; nada é salvo nem enviado pelo sistema. Experimente registrar uma oferta, abrir o agradecimento que nasce dela, importar uma planilha e cadastrar um mantenedor novo.",
+  intro_b:"Depois de testar, conte o que faltou ou o que não faria diferença para você.",feedback:"Quero testar quando estiver pronto",
+  goal_t:"Sustento do mês",goal_l:"Meta de sustento mensal",goal_hint:"Edite a meta e o painel recalcula. Sem conversão de moedas.",planned:"Previsto",received:"Recebido",planned_n:"{x} compromissos mensais · {p}% da meta",received_n:"{p}% da meta · faltam {x}",received_ok:"{p}% da meta · meta atingida",
+  bycur:"Totais por moeda",bycur_note:"Cada moeda é somada separadamente, sem conversão.",bycur_n:"{p}% de {x} previstos",bycur_none:"Sem compromisso mensal nesta moeda",
+  act:"Mantenedores ativos",regd:"Ofertas registradas",of:"de",monthly:"mensais",pend:"Agradecimentos pendentes",ready:"Prontos para revisar",none_pend:"Nenhum pendente",
+  tolog:"A registrar este mês",tolog_n:"compromissos sem registro este mês",all_logged:"Todas as ofertas do mês estão registradas.",log:"Registrar",
+  thx_send:"Agradecimentos para enviar",review:"Revisar",last6:"Recebido nos últimos 6 meses (R$)",lastoff:"Últimas ofertas",allgifts:"Todas as ofertas",
+  care_t:"Esta semana",care_none:"Nenhum aniversário ou aniversário de apoio nos próximos 7 dias.",care_open:"Abrir mensagem",care_bday:"Aniversário",today:"hoje",tomorrow:"amanhã",in_days:"em {n} dias",
+  care_h:"Cuidar de ",care_sub:"Lembrete de cuidado",care_done:"Marcar como feito",care_done_ok:"Lembrete marcado como feito",care_subj_bday:"Feliz aniversário!",care_subj_anniv:"Caminhando juntos",
+  date:"Data",who:"Mantenedor",value:"Valor",way:"Forma",thanks:"Agradecimento",sent:"Enviado",pending:"Pendente",
+  newsup:"Novo mantenedor",newoff:"Registrar oferta",search:"Buscar por nome ou e-mail",commit:"Compromisso",lastoffer:"Última oferta",mailok:"Mensagens autorizadas",yes:"Sim",no:"Não",
+  data:"Dados",name:"Nome",name_ph:"Nome da pessoa, casal ou igreja",email:"E-mail",wa:"WhatsApp (opcional)",city:"Cidade / país (opcional)",bday_l:"Aniversário (opcional)",since_l:"Início do apoio (opcional)",care_fields:"Datas de cuidado",pledge:"Compromisso de oferta",amount:"Valor",cur:"Moeda",freq:"Frequência",method:"Forma",
+  f_monthly:"Mensal",f_quarterly:"Trimestral",f_yearly:"Anual",f_once:"Pontual",
+  m_pix:"Pix",m_transfer:"Transferência",m_card:"Cartão",m_cash:"Dinheiro",
+  consent:"Esta pessoa autorizou receber mensagens de agradecimento por e-mail ou WhatsApp. Ela pode pedir para sair a qualquer momento.",consent_t:"Consentimento (LGPD)",
+  cancel:"Cancelar",savesup:"Salvar mantenedor",saveoff:"Salvar oferta",per:" / mês",once:"Pontual",never:"nenhuma",
+  off_sub:"Leva menos de um minuto. O agradecimento nasce deste registro.",prep:"Preparar agradecimento depois de salvar",
+  s_commit:"Compromisso",s_last:"Última oferta",s_count:"Ofertas neste mês",s_mail:"Mensagens autorizadas",
+  back_dash:"← Painel",back_sup:"← Mantenedores",
+  thank:"Agradecer ",nopick:"Registre uma oferta para gerar um agradecimento.",mode:"Como enviar",auto:"Automático",auto_d:"No produto real, o sistema envia ao registrar a oferta",sug:"Sugerido",sug_d:"Você revisa e envia (ou copia)",
+  message:"Mensagem",vars:"Variáveis:",preview:"Prévia da mensagem",from:"De",to:"Para",subject:"Assunto",subj:"Obrigado pela sua oferta",
+  wa_btn:"Abrir no WhatsApp",mail_btn:"Abrir no meu e-mail",wa_none:"Sem WhatsApp cadastrado",wa_hint:"O WhatsApp e o e-mail abrem no seu aparelho com a mensagem pronta; você revisa e toca em enviar. O sistema não envia nada por você.",
+  mark:"Marcar como enviado",copy:"Copiar texto",copied:"Texto copiado",copyfail:"Selecione o texto e copie",sentdemo:"Marcado como enviado. O protótipo não envia nada.",
+  noconsent:"Esta pessoa ainda não autorizou mensagens. Copie o texto e envie por onde preferir.",ok_consent:"autorizou receber mensagens.",
+  saved_sup:"Mantenedor cadastrado",saved_off:"Oferta registrada. O agradecimento está pronto para revisar.",reset_ok:"Exemplo restaurado",
+  imp_t:"Importar da planilha",imp_sub:"Cole as linhas copiadas da sua planilha ou de um CSV. O texto fica só neste navegador.",imp_cols:"Colunas, nesta ordem: nome, e-mail, WhatsApp, valor, moeda (BRL, USD ou EUR), frequência (mensal, trimestral, anual ou pontual). A primeira linha pode ser o cabeçalho. WhatsApp sem + e com 10 ou 11 dígitos é tratado como Brasil (+55).",
+  imp_lbl:"Linhas da planilha",imp_ph:"nome;e-mail;WhatsApp;valor;moeda;frequência",imp_ex:"Usar exemplo",imp_clear:"Limpar",imp_prev:"Prévia",imp_valid:"{v} válidas · {e} com erro",imp_empty:"Cole algumas linhas para ver a prévia.",
+  imp_status:"Situação",imp_ok:"OK",imp_consent:"Confirmo que essas pessoas autorizaram receber mensagens",imp_btn:"Importar {n} válidas",imp_only:"Só as linhas válidas são importadas; as com erro ficam de fora.",imp_done:"{n} importados · {m} ignorados por erro",
+  e_name:"nome ausente",e_contact:"informe e-mail ou WhatsApp",e_email:"e-mail inválido",e_wa:"WhatsApp inválido",e_amount:"valor inválido",e_cur:"moeda inválida",e_freq:"frequência inválida",e_dup:"já cadastrado",
+  rep_t:"Relatório mensal",rep_sub:"Prestação de contas de ",rep_print:"Imprimir / salvar PDF",rep_total:"Total recebido",rep_note:"Cada moeda é somada separadamente, sem conversão.",rep_gifts:"Ofertas do mês",rep_list:"Mantenedores",rep_status:"Neste mês",rep_recv:"Recebido",rep_miss:"Pendente",rep_na:"—",rep_none:"Nenhuma oferta registrada neste mês.",rep_gen:"Gerado em ",rep_by:"Missionário: ",rep_sub_t:"Subtotal",rep_count:"ofertas",since_c:"Apoio desde",
+  prof:"Perfil e idioma",lang_l:"Idioma",sendmail:"E-mail de envio",thx_set:"Agradecimentos",defmode:"Modo padrão",defsug:"Sugerido (eu reviso)",sign:"Assinatura",
+  weekly_t:"Resumo semanal",weekly_chk:"Receber resumo semanal por e-mail",weekly_day:"Dia da semana",weekly_prev:"Prévia do e-mail",weekly_on:"Ativo. Dia do envio: {d}.",weekly_off:"Desativado. A prévia mostra como seria.",weekly_subj:"Seu resumo da semana",weekly_from:"Sustento (nome provisório)",
+  priv:"Privacidade dos mantenedores",priv_p:"Você decide o que fazer com os dados dos seus mantenedores. O sistema apenas os guarda em seu nome e as mensagens só saem do seu próprio WhatsApp ou e-mail, para quem autorizou.",
+  export:"Exportar meus dados",consent_txt:"Ver texto de consentimento",nopro:"Não disponível no protótipo",plan:"Plano",plan_p:"Período de teste · valor mensal a definir",
+  sig_def:"Com gratidão,\nRafael",
+  ytxt:function(n){return n+(n===1?" ano":" anos")+" de apoio";},
+  wk:function(n,m,k,rest){return "Olá, Rafael.\n\nEsta semana:\n• "+(n===1?"1 oferta esperada":n+" ofertas esperadas")+"\n• "+(m===1?"1 agradecimento pendente":m+" agradecimentos pendentes")+"\n• "+(k===1?"1 lembrete de cuidado":k+" lembretes de cuidado")+"\n\nAbra o Sustento para registrar ofertas e preparar as mensagens.";},
+  tpl:function(n,a,sig){return "Olá, "+n+",\n\nRecebi sua oferta de "+a+" e quero agradecer pelo cuidado e pela fidelidade com que você sustenta este chamado. Sua generosidade me permite seguir firme no campo.\n\n"+sig;},
+  tpl_bday:function(n,sig){return "Olá, "+n+"!\n\nPassei para te desejar um feliz aniversário. Que Deus abençoe o seu novo ano de vida! Obrigado por caminhar comigo e por tornar este chamado possível.\n\n"+sig;},
+  tpl_anniv:function(n,y,sig){return "Olá, "+n+"!\n\nNesta semana completamos "+y+". Quero agradecer a sua fidelidade: cada mês de apoio sustenta o trabalho que Deus me confiou.\n\n"+sig;}},
+ en:{sub:"working name",badge:"Prototype · sample data",role:"Missionary",reset:"Reset sample",
+  home:"Dashboard",sup:"Supporters",off:"Gifts",thx:"Thank-yous",imp:"Import",rep:"Report",set:"Settings",
+  gm:"Good morning",ga:"Good afternoon",gn:"Good evening",summary:"Summary for ",
+  intro_t:"A prototype for you to try",intro_p:"Everything here is sample data; nothing is saved or sent by the system. Try logging a gift, opening the thank-you it creates, importing a spreadsheet and adding a new supporter.",
+  intro_b:"After trying it, tell us what was missing or what would not matter to you.",feedback:"I want to try it when it is ready",
+  goal_t:"Support for the month",goal_l:"Monthly support goal",goal_hint:"Edit the goal and the dashboard recalculates. No currency conversion.",planned:"Expected",received:"Received",planned_n:"{x} from monthly pledges · {p}% of goal",received_n:"{p}% of goal · {x} to go",received_ok:"{p}% of goal · goal reached",
+  bycur:"Totals by currency",bycur_note:"Each currency is added up separately, with no conversion.",bycur_n:"{p}% of {x} expected",bycur_none:"No monthly pledge in this currency",
+  act:"Active supporters",regd:"Gifts logged",of:"of",monthly:"monthly",pend:"Pending thank-yous",ready:"Ready to review",none_pend:"None pending",
+  tolog:"To log this month",tolog_n:"pledges with no gift logged this month",all_logged:"All gifts for this month are logged.",log:"Log gift",
+  thx_send:"Thank-yous to send",review:"Review",last6:"Received in the last 6 months (BRL)",lastoff:"Latest gifts",allgifts:"All gifts",
+  care_t:"This week",care_none:"No birthdays or support anniversaries in the next 7 days.",care_open:"Open message",care_bday:"Birthday",today:"today",tomorrow:"tomorrow",in_days:"in {n} days",
+  care_h:"Care for ",care_sub:"Care reminder",care_done:"Mark as done",care_done_ok:"Reminder marked as done",care_subj_bday:"Happy birthday!",care_subj_anniv:"Walking together",
+  date:"Date",who:"Supporter",value:"Amount",way:"Method",thanks:"Thank-you",sent:"Sent",pending:"Pending",
+  newsup:"New supporter",newoff:"Log a gift",search:"Search by name or email",commit:"Pledge",lastoffer:"Last gift",mailok:"Messages allowed",yes:"Yes",no:"No",
+  data:"Details",name:"Name",name_ph:"Name of a person, couple or church",email:"Email",wa:"WhatsApp (optional)",city:"City / country (optional)",bday_l:"Birthday (optional)",since_l:"Support start (optional)",care_fields:"Care dates",pledge:"Gift pledge",amount:"Amount",cur:"Currency",freq:"Frequency",method:"Method",
+  f_monthly:"Monthly",f_quarterly:"Quarterly",f_yearly:"Yearly",f_once:"One-time",
+  m_pix:"Pix",m_transfer:"Bank transfer",m_card:"Card",m_cash:"Cash",
+  consent:"This person agreed to receive thank-you messages by email or WhatsApp. They can opt out at any time.",consent_t:"Consent (LGPD)",
+  cancel:"Cancel",savesup:"Save supporter",saveoff:"Save gift",per:" / month",once:"One-time",never:"none",
+  off_sub:"Takes under a minute. The thank-you starts from this entry.",prep:"Prepare the thank-you after saving",
+  s_commit:"Pledge",s_last:"Last gift",s_count:"Gifts this month",s_mail:"Messages allowed",
+  back_dash:"← Dashboard",back_sup:"← Supporters",
+  thank:"Thank ",nopick:"Log a gift to create a thank-you.",mode:"How to send",auto:"Automatic",auto_d:"In the real product, it sends as soon as you log the gift",sug:"Suggested",sug_d:"You review and send (or copy)",
+  message:"Message",vars:"Variables:",preview:"Message preview",from:"From",to:"To",subject:"Subject",subj:"Thank you for your gift",
+  wa_btn:"Open in WhatsApp",mail_btn:"Open in my email",wa_none:"No WhatsApp on file",wa_hint:"WhatsApp and email open on your device with the message ready; you review it and tap send. The system never sends anything for you.",
+  mark:"Mark as sent",copy:"Copy text",copied:"Text copied",copyfail:"Select the text and copy it",sentdemo:"Marked as sent. This prototype sends nothing.",
+  noconsent:"This person has not agreed to messages yet. Copy the text and send it however you prefer.",ok_consent:"agreed to receive messages.",
+  saved_sup:"Supporter added",saved_off:"Gift logged. The thank-you is ready to review.",reset_ok:"Sample restored",
+  imp_t:"Import from a spreadsheet",imp_sub:"Paste rows copied from your spreadsheet or a CSV. The text stays in this browser only.",imp_cols:"Columns, in this order: name, email, WhatsApp, amount, currency (BRL, USD or EUR), frequency (monthly, quarterly, yearly or one-time). The first row can be a header. A WhatsApp number without + and with 10 or 11 digits is treated as Brazil (+55).",
+  imp_lbl:"Spreadsheet rows",imp_ph:"name;email;WhatsApp;amount;currency;frequency",imp_ex:"Use sample",imp_clear:"Clear",imp_prev:"Preview",imp_valid:"{v} valid · {e} with errors",imp_empty:"Paste a few rows to see the preview.",
+  imp_status:"Status",imp_ok:"OK",imp_consent:"I confirm these people agreed to receive messages",imp_btn:"Import {n} valid",imp_only:"Only valid rows are imported; rows with errors are left out.",imp_done:"{n} imported · {m} skipped for errors",
+  e_name:"missing name",e_contact:"enter email or WhatsApp",e_email:"invalid email",e_wa:"invalid WhatsApp",e_amount:"invalid amount",e_cur:"invalid currency",e_freq:"invalid frequency",e_dup:"already added",
+  rep_t:"Monthly report",rep_sub:"Accountability report for ",rep_print:"Print / save as PDF",rep_total:"Total received",rep_note:"Each currency is added up separately, with no conversion.",rep_gifts:"Gifts this month",rep_list:"Supporters",rep_status:"This month",rep_recv:"Received",rep_miss:"Pending",rep_na:"—",rep_none:"No gifts logged this month.",rep_gen:"Generated on ",rep_by:"Missionary: ",rep_sub_t:"Subtotal",rep_count:"gifts",since_c:"Supporting since",
+  prof:"Profile and language",lang_l:"Language",sendmail:"Sending email",thx_set:"Thank-yous",defmode:"Default mode",defsug:"Suggested (I review)",sign:"Signature",
+  weekly_t:"Weekly summary",weekly_chk:"Receive a weekly summary by email",weekly_day:"Day of the week",weekly_prev:"Email preview",weekly_on:"On. Delivery day: {d}.",weekly_off:"Off. The preview shows what it would look like.",weekly_subj:"Your week at a glance",weekly_from:"Sustento (working name)",
+  priv:"Supporter privacy",priv_p:"You decide what happens with your supporters' data. The system only stores it on your behalf, and messages leave only from your own WhatsApp or email, to people who agreed.",
+  export:"Export my data",consent_txt:"View consent text",nopro:"Not available in the prototype",plan:"Plan",plan_p:"Trial period · monthly price to be defined",
+  sig_def:"With gratitude,\nRafael",
+  ytxt:function(n){return n+(n===1?" year":" years")+" of support";},
+  wk:function(n,m,k){return "Hello Rafael,\n\nThis week:\n• "+(n===1?"1 expected gift":n+" expected gifts")+"\n• "+(m===1?"1 pending thank-you":m+" pending thank-yous")+"\n• "+(k===1?"1 care reminder":k+" care reminders")+"\n\nOpen Sustento to log gifts and prepare your messages.";},
+  tpl:function(n,a,sig){return "Hello "+n+",\n\nI received your gift of "+a+" and want to thank you for the care and faithfulness with which you support this calling. Your generosity lets me keep going in the field.\n\n"+sig;},
+  tpl_bday:function(n,sig){return "Hello "+n+"!\n\nI wanted to wish you a happy birthday. May God bless your new year of life! Thank you for walking with me and making this calling possible.\n\n"+sig;},
+  tpl_anniv:function(n,y,sig){return "Hello "+n+"!\n\nThis week we complete "+y+". I want to thank you for your faithfulness: every month of support sustains the work God entrusted to me.\n\n"+sig;}}
+};
+var lang="pt", tab="home", backTab="home", sel=null, drafts={}, mode="sug", uid=100, S=[], O=[], filter="", offSid=null, sigCustom=null;
+var goal={amt:3000,cur:"BRL"}, wk={on:false,day:1}, done={}, careSel=null, impText="", impConsent=false;
+var now=new Date(), ym=now.getFullYear()*12+now.getMonth(), today0=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+var CURS=["BRL","USD","EUR"];
+function t(k){return I[lang][k]!==undefined?I[lang][k]:k;}
+function loc(){return lang==="pt"?"pt-BR":"en-US";}
+function pad(n){return (n<10?"0":"")+n;}
+function iso(d){return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());}
+function money(v,c){try{return new Intl.NumberFormat(loc(),{style:"currency",currency:c}).format(v);}catch(e){return c+" "+v;}}
+function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
+function mk(s){var p=s.split("-");return +p[0]*12+(+p[1]-1);}
+function dlabel(s){var p=s.split("-");return new Date(+p[0],+p[1]-1,+p[2]).toLocaleDateString(loc(),{day:"2-digit",month:"short"});}
+function sup(id){return S.filter(function(x){return x.id===id;})[0];}
+function dayN(n){return iso(new Date(now.getFullYear(),now.getMonth(),Math.min(n,now.getDate())));}
+function offDay(n){return iso(new Date(now.getFullYear(),now.getMonth(),now.getDate()+n));}
+/* data de hoje + n dias, com o ano recuado: usada para criar aniversários e inícios de apoio fictícios */
+function mdOff(n,yearsAgo){var d=new Date(now.getFullYear(),now.getMonth(),now.getDate()+n);return iso(new Date(d.getFullYear()-yearsAgo,d.getMonth(),d.getDate()));}
+function sigText(){return sigCustom!==null?sigCustom:t("sig_def");}
+function seed(){
+ S=[
+  {id:1,name:"Helena Prado",email:"helena@exemplo.com",wa:"+55 44 90000-0001",bday:mdOff(2,34),since:mdOff(40,3),amount:150,cur:"BRL",freq:"monthly",method:"pix",consent:true},
+  {id:2,name:"Carlos Mendes",email:"carlos@exemplo.com",wa:"+55 44 90000-0002",since:mdOff(4,2),amount:100,cur:"BRL",freq:"monthly",method:"transfer",consent:true},
+  {id:3,name:"Igreja Esperança",email:"tesouraria@exemplo.com",wa:"+55 44 90000-0003",since:mdOff(0,5),amount:500,cur:"BRL",freq:"monthly",method:"pix",consent:true},
+  {id:4,name:"Luciana Teixeira",email:"luciana@exemplo.com",wa:"+1 555 010 0004",amount:20,cur:"USD",freq:"monthly",method:"card",consent:true},
+  {id:5,name:"Marta Oliveira",email:"marta@exemplo.com",wa:"+55 44 90000-0005",bday:mdOff(6,52),amount:80,cur:"BRL",freq:"monthly",method:"pix",consent:true},
+  {id:6,name:"Paulo e Rita Souza",email:"paulorita@exemplo.com",wa:"+55 44 90000-0006",amount:200,cur:"BRL",freq:"monthly",method:"pix",consent:false},
+  {id:7,name:"Tiago Ferraz",email:"tiago@exemplo.com",wa:"+55 44 90000-0007",amount:60,cur:"BRL",freq:"monthly",method:"pix",consent:true},
+  {id:8,name:"Ana Beatriz Lima",email:"anabeatriz@exemplo.com",wa:"+55 44 90000-0008",since:mdOff(5,1),amount:120,cur:"BRL",freq:"monthly",method:"pix",consent:true},
+  {id:9,name:"Roberto Alves",email:"roberto@exemplo.com",bday:mdOff(1,61),amount:50,cur:"BRL",freq:"monthly",method:"pix",consent:true},
+  {id:10,name:"Família Nogueira",email:"nogueira@exemplo.com",wa:"+55 44 90000-0010",amount:250,cur:"BRL",freq:"monthly",method:"transfer",consent:true},
+  {id:11,name:"Sandra Coelho",email:"sandra@exemplo.com",bday:mdOff(12,45),amount:40,cur:"BRL",freq:"monthly",method:"pix",consent:true},
+  {id:12,name:"João Pedro Rocha",email:"joaopedro@exemplo.com",wa:"+55 44 90000-0012",amount:90,cur:"BRL",freq:"monthly",method:"pix",consent:true},
+  {id:13,name:"Marie Laurent",email:"marie@exemplo.com",wa:"+33 6 00 00 00 13",amount:30,cur:"EUR",freq:"monthly",method:"card",consent:true}
+ ];
+ O=[
+  {id:1,sid:1,date:dayN(12),amount:150,cur:"BRL",method:"pix",thanked:false},
+  {id:2,sid:2,date:dayN(11),amount:100,cur:"BRL",method:"transfer",thanked:false},
+  {id:3,sid:3,date:dayN(10),amount:500,cur:"BRL",method:"pix",thanked:false},
+  {id:4,sid:4,date:dayN(9),amount:20,cur:"USD",method:"card",thanked:false},
+  {id:5,sid:5,date:dayN(8),amount:80,cur:"BRL",method:"pix",thanked:true},
+  {id:6,sid:6,date:dayN(5),amount:200,cur:"BRL",method:"pix",thanked:true},
+  {id:7,sid:7,date:dayN(4),amount:60,cur:"BRL",method:"pix",thanked:true},
+  {id:8,sid:8,date:dayN(2),amount:120,cur:"BRL",method:"pix",thanked:true},
+  {id:9,sid:13,date:dayN(7),amount:30,cur:"EUR",method:"card",thanked:true}
+ ];
+ drafts={}; sel=null; sigCustom=null; mode="sug"; goal={amt:3000,cur:"BRL"}; wk={on:false,day:1}; done={}; careSel=null; impText=""; impConsent=false;
+}
+function thisMonth(){return O.filter(function(o){return mk(o.date)===ym;});}
+function pendingList(){return O.filter(function(o){return !o.thanked;}).sort(function(a,b){return a.date<b.date?1:-1;});}
+function lastOffer(sid){var l=O.filter(function(o){return o.sid===sid;}).sort(function(a,b){return a.date<b.date?1:-1;});return l[0];}
+function opts(list,cur){return list.map(function(p){return '<option value="'+p[0]+'"'+(String(p[0])===String(cur)?" selected":"")+">"+esc(p[1])+"</option>";}).join("");}
+function curOpts(){return [["BRL","BRL (R$)"],["USD","USD (US$)"],["EUR","EUR (€)"]];}
+function methOpts(){return [["pix",t("m_pix")],["transfer",t("m_transfer")],["card",t("m_card")],["cash",t("m_cash")]];}
+function freqOpts(){return [["monthly",t("f_monthly")],["quarterly",t("f_quarterly")],["yearly",t("f_yearly")],["once",t("f_once")]];}
+function commitTxt(s){return s.freq==="once"?t("once"):money(s.amount,s.cur)+(s.freq==="monthly"?t("per"):" · "+t("f_"+s.freq));}
+function navKey(){return tab==="newSup"?"sup":tab==="newOff"?"off":tab==="care"?"home":tab;}
+function sub(str,map){return str.replace(/\{(\w+)\}/g,function(m,k){return map[k]!==undefined?map[k]:m;});}
+
+/* totais por moeda, sem conversão: previsto = compromissos mensais; recebido = ofertas do mês */
+function totalsByCur(){
+ var r={};CURS.forEach(function(c){r[c]={plan:0,rec:0,n:0};});
+ S.forEach(function(s){if(s.freq==="monthly"&&r[s.cur]){r[s.cur].plan+=s.amount;r[s.cur].n++;}});
+ thisMonth().forEach(function(o){if(r[o.cur])r[o.cur].rec+=o.amount;});
+ return r;
+}
+function pct(a,b){return b>0?Math.min(100,Math.round(a/b*100)):0;}
+
+/* lembretes de cuidado: aniversários e aniversários de apoio nos próximos 7 dias (hoje + 6) */
+function nextOcc(ds){var p=ds.split("-"),m=+p[1]-1,d=+p[2],c=new Date(today0.getFullYear(),m,d);if(c<today0)c=new Date(today0.getFullYear()+1,m,d);return c;}
+function careItems(all){
+ var out=[];
+ S.forEach(function(s){
+  [["bday",s.bday],["anniv",s.since]].forEach(function(k){
+   if(!k[1])return;
+   var c=nextOcc(k[1]), days=Math.round((c-today0)/864e5);
+   if(days>6)return;
+   var yrs=c.getFullYear()-(+k[1].slice(0,4));
+   if(k[0]==="anniv"&&yrs<1)return;
+   var key=s.id+":"+k[0]+":"+c.getFullYear();
+   if(done[key]&&!all)return;
+   out.push({sid:s.id,kind:k[0],days:days,date:c,years:yrs,key:key});
+  });
+ });
+ return out.sort(function(a,b){return a.days-b.days;});
+}
+function whenTxt(i){
+ var w=i.days===0?t("today"):i.days===1?t("tomorrow"):t("in_days").replace("{n}",i.days);
+ return w+" ("+i.date.toLocaleDateString(loc(),{day:"numeric",month:"short"}).replace(".","")+")";
+}
+function careLabel(i){return (i.kind==="bday"?t("care_bday"):t("ytxt")(i.years))+" · "+whenTxt(i);}
+
+/* links de mensagem: abrem o WhatsApp / e-mail do próprio missionário; nada é enviado pelo sistema */
+function waDigits(raw){
+ raw=String(raw||"").trim();var d=raw.replace(/\D/g,"");
+ if(raw.indexOf("00")===0)d=d.slice(2);
+ else if(raw.charAt(0)!=="+"&&(d.length===10||d.length===11))d="55"+d;
+ return d.length>=8&&d.length<=15?d:"";
+}
+function waHref(s,txt){var d=waDigits(s.wa);return d?"https://wa.me/"+d+"?text="+encodeURIComponent(txt):"";}
+function mailHref(s,txt,subj){return "mailto:"+s.email+"?subject="+encodeURIComponent(subj)+"&body="+encodeURIComponent(txt.replace(/\r?\n/g,"\r\n"));}
+
+function renderChrome(){
+ document.documentElement.lang=lang==="pt"?"pt-BR":"en";
+ document.getElementById("sub").textContent=t("sub");
+ document.getElementById("badge").textContent=t("badge");
+ document.getElementById("role").textContent=t("role");
+ document.getElementById("l-pt").setAttribute("aria-pressed",lang==="pt");
+ document.getElementById("l-en").setAttribute("aria-pressed",lang==="en");
+ var pc=pendingList().length, nk=navKey();
+ var items=[["home",t("home")],["sup",t("sup")],["off",t("off")],["thx",t("thx")],["imp",t("imp")],["rep",t("rep")],["set",t("set")]];
+ document.getElementById("menu").innerHTML=items.map(function(x){
+  return '<button type="button" data-a="tab" data-v="'+x[0]+'"'+(nk===x[0]?' aria-current="page"':"")+">"+x[1]+(x[0]==="thx"&&pc?'<span class="count">'+pc+"</span>":"")+"</button>";
+ }).join("");
+}
+function greet(){var h=now.getHours();return t(h<12?"gm":h<18?"ga":"gn");}
+function goalCard(){
+ var tc=totalsByCur(), c=tc[goal.cur]||{plan:0,rec:0}, g=goal.amt;
+ var pp=g>0?Math.round(c.plan/g*100):0, pr=g>0?Math.round(c.rec/g*100):0, left=Math.max(0,g-c.rec);
+ return '<section class="card"><h2>'+t("goal_t")+'</h2>'+
+ '<div class="fr goal"><div class="f"><label for="goal-amt">'+t("goal_l")+'</label><input id="goal-amt" inputmode="decimal" value="'+goal.amt+'"></div>'+
+ '<div class="f"><label for="goal-cur">'+t("cur")+'</label><select id="goal-cur">'+opts(curOpts(),goal.cur)+'</select></div></div>'+
+ '<div class="note">'+t("goal_hint")+'</div>'+
+ '<div class="pms"><div><div class="k">'+t("planned")+'</div><div class="v">'+money(c.plan,goal.cur)+'</div><div class="meter soft" role="img" aria-label="'+t("planned")+" "+Math.min(100,pp)+'%"><i style="width:'+Math.min(100,pp)+'%"></i></div><div class="n">'+t("planned_n").replace("{x}",c.n).replace("{p}",pp)+'</div></div>'+
+ '<div><div class="k">'+t("received")+'</div><div class="v">'+money(c.rec,goal.cur)+'</div><div class="meter" role="img" aria-label="'+t("received")+" "+Math.min(100,pr)+'%"><i style="width:'+Math.min(100,pr)+'%"></i></div><div class="n">'+(left>0?t("received_n").replace("{p}",pr).replace("{x}",money(left,goal.cur)):t("received_ok").replace("{p}",pr))+'</div></div></div></section>';
+}
+function curTiles(){
+ var tc=totalsByCur();
+ return '<section style="display:flex;flex-direction:column;gap:12px"><h2>'+t("bycur")+'</h2><div class="stats">'+CURS.map(function(c){
+  var x=tc[c], p=pct(x.rec,x.plan);
+  return '<div><div class="k">'+c+'</div><div class="v">'+money(x.rec,c)+'</div><div class="meter" role="img" aria-label="'+p+'%"><i style="width:'+p+'%"></i></div><div class="n">'+(x.plan>0?t("bycur_n").replace("{p}",p).replace("{x}",money(x.plan,c)):t("bycur_none"))+'</div></div>';
+ }).join("")+'</div><div class="note">'+t("bycur_note")+'</div></section>';
+}
+function careCard(){
+ var c=careItems();
+ return '<div class="card"><h2>'+t("care_t")+'</h2><div class="list">'+(c.length?c.map(function(i){
+  return '<div class="item"><div><div class="t">'+esc(sup(i.sid).name)+'</div><div class="m">'+esc(careLabel(i))+'</div></div><button type="button" class="btn ghost small" data-a="care" data-v="'+esc(i.key)+'">'+t("care_open")+'</button></div>';
+ }).join(""):'<div class="note">'+t("care_none")+'</div>')+'</div></div>';
+}
+function viewHome(){
+ var tm=thisMonth(), recBRL=0, i;
+ tm.forEach(function(o){if(o.cur==="BRL")recBRL+=o.amount;});
+ var monthly=S.filter(function(s){return s.freq==="monthly";});
+ var logged={}; tm.forEach(function(o){logged[o.sid]=1;});
+ var missing=monthly.filter(function(s){return !logged[s.id];});
+ var loggedN=monthly.length-missing.length;
+ var pend=pendingList();
+ var prev=[1350,1430,1480,1520,1580], vals=prev.concat([recBRL]), labels=[];
+ for(i=5;i>=0;i--){labels.push(new Date(now.getFullYear(),now.getMonth()-i,1).toLocaleDateString(loc(),{month:"short"}).replace(".",""));}
+ var mx=Math.max.apply(null,vals.concat([1]));
+ var bars=vals.map(function(v,k){
+  return '<div'+(k===5?' class="cur"':"")+"><em>"+v.toLocaleString(loc())+'</em><i style="height:'+Math.max(4,Math.round(v/mx*130))+'px"></i><span>'+esc(labels[k])+"</span></div>";
+ }).join("");
+ var recent=O.slice().sort(function(a,b){return a.date<b.date?1:-1;}).slice(0,5).map(offRow).join("");
+ var mname=now.toLocaleDateString(loc(),{month:"long",year:"numeric"});
+ return '<header class="head"><div><h1>'+greet()+', Rafael</h1><div class="sub">'+t("summary")+esc(mname)+'</div></div><button type="button" class="btn" data-a="newOff">'+t("newoff")+"</button></header>"+
+ '<section class="card"><h2>'+t("intro_t")+'</h2><div>'+t("intro_p")+'</div><div class="note">'+t("intro_b")+"</div>"+(FEEDBACK_URL?'<div class="acts left"><a class="btn" href="'+esc(FEEDBACK_URL)+'" target="_blank" rel="noopener">'+t("feedback")+"</a></div>":"")+"</section>"+
+ goalCard()+curTiles()+
+ '<section class="stats">'+
+ '<div><div class="k">'+t("act")+'</div><div class="v">'+S.length+'</div><div class="n">'+monthly.length+" "+t("monthly")+"</div></div>"+
+ '<div><div class="k">'+t("regd")+'</div><div class="v">'+loggedN+" "+t("of")+" "+monthly.length+'</div><div class="n">'+missing.length+" "+t("tolog_n")+"</div></div>"+
+ '<div class="w"><div class="k">'+t("pend")+'</div><div class="v">'+pend.length+'</div><div class="n">'+(pend.length?t("ready"):t("none_pend"))+"</div></div></section>"+
+ '<section class="row top">'+careCard()+'<div class="card"><h2>'+t("tolog")+'</h2><div class="list">'+
+  (missing.length?missing.slice(0,5).map(function(s){return '<div class="item"><div><div class="t">'+esc(s.name)+'</div><div class="m">'+commitTxt(s)+'</div></div><button type="button" class="btn ghost small" data-a="newOff" data-v="'+s.id+'">'+t("log")+"</button></div>";}).join(""):'<div class="note">'+t("all_logged")+"</div>")+"</div></div>"+
+ '<div class="card"><h2>'+t("thx_send")+'</h2><div class="list">'+
+  (pend.length?pend.slice(0,4).map(function(o){var s=sup(o.sid);return '<div class="item"><div><div class="t">'+esc(s.name)+'</div><div class="m">'+money(o.amount,o.cur)+" · "+t("m_"+o.method)+" · "+dlabel(o.date)+'</div></div><button type="button" class="btn ghost small" data-a="review" data-v="'+o.id+'">'+t("review")+"</button></div>";}).join(""):'<div class="note">'+t("none_pend")+"</div>")+"</div></div></section>"+
+ '<section class="card"><h2>'+t("last6")+'</h2><div class="bars">'+bars+"</div></section>"+
+ '<section class="card"><h2>'+t("lastoff")+'</h2><div class="scroll">'+offTable(recent)+"</div></section>";
+}
+function offRow(o){
+ var s=sup(o.sid);
+ return "<tr><td>"+dlabel(o.date)+"</td><td>"+esc(s.name)+"</td><td>"+money(o.amount,o.cur)+"</td><td>"+t("m_"+o.method)+'</td><td class="'+(o.thanked?"ok":"no")+'">'+t(o.thanked?"sent":"pending")+"</td></tr>";
+}
+function offTable(rows){
+ return "<table><thead><tr><th>"+t("date")+"</th><th>"+t("who")+"</th><th>"+t("value")+"</th><th>"+t("way")+"</th><th>"+t("thanks")+"</th></tr></thead><tbody>"+rows+"</tbody></table>";
+}
+function supRows(){
+ var q=filter.toLowerCase();
+ return S.filter(function(s){return !q||s.name.toLowerCase().indexOf(q)>-1||s.email.toLowerCase().indexOf(q)>-1;}).map(function(s){
+  var lo=lastOffer(s.id);
+  return '<tr><td style="font-weight:600">'+esc(s.name)+'<div class="note" style="font-weight:400">'+esc(s.email)+"</div></td><td>"+commitTxt(s)+"</td><td>"+t("m_"+s.method)+"</td><td>"+(lo?dlabel(lo.date):t("never"))+'</td><td class="'+(s.consent?"ok":"no")+'">'+t(s.consent?"yes":"no")+'</td><td><button type="button" class="btn ghost small" data-a="newOff" data-v="'+s.id+'">'+t("log")+"</button></td></tr>";
+ }).join("");
+}
+function viewSup(){
+ var cm=0;S.forEach(function(s){if(s.freq==="monthly"&&s.cur==="BRL")cm+=s.amount;});
+ return '<header class="head"><div><h1>'+t("sup")+'</h1><div class="sub">'+S.length+" "+t("act").toLowerCase()+" · "+money(cm,"BRL")+t("per")+'</div></div><button type="button" class="btn" data-a="newSup">'+t("newsup")+"</button></header>"+
+ '<div class="f"><label for="q" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)">'+t("search")+'</label><input id="q" type="search" value="'+esc(filter)+'" placeholder="'+esc(t("search"))+'"></div>'+
+ '<section class="card" style="padding-top:8px"><div class="scroll"><table><thead><tr><th>'+t("name")+"</th><th>"+t("commit")+"</th><th>"+t("method")+"</th><th>"+t("lastoffer")+"</th><th>"+t("mailok")+'</th><th></th></tr></thead><tbody id="rows">'+supRows()+"</tbody></table></div></section>";
+}
+function viewNewSup(){
+ return '<header><button type="button" class="back" data-a="tab" data-v="sup">'+t("back_sup")+'</button><h1 style="margin-top:8px">'+t("newsup")+"</h1></header>"+
+ '<form id="f-sup" autocomplete="off" style="display:flex;flex-direction:column;gap:24px">'+
+ '<section class="card"><h2>'+t("data")+'</h2><div class="fr"><div class="f"><label for="s-name">'+t("name")+'</label><input id="s-name" required placeholder="'+esc(t("name_ph"))+'"></div><div class="f"><label for="s-email">'+t("email")+'</label><input id="s-email" type="email" required placeholder="nome@email.com"></div></div>'+
+ '<div class="fr"><div class="f"><label for="s-wa">'+t("wa")+'</label><input id="s-wa" type="tel" placeholder="+55 44 90000-0000"></div><div class="f"><label for="s-city">'+t("city")+'</label><input id="s-city" placeholder="Maringá, Brasil"></div></div></section>'+
+ '<section class="card"><h2>'+t("care_fields")+'</h2><div class="fr"><div class="f"><label for="s-bday">'+t("bday_l")+'</label><input id="s-bday" type="date"></div><div class="f"><label for="s-since">'+t("since_l")+'</label><input id="s-since" type="date"></div></div></section>'+
+ '<section class="card"><h2>'+t("pledge")+'</h2><div class="fr four"><div class="f"><label for="s-amt">'+t("amount")+'</label><input id="s-amt" inputmode="decimal" value="100"></div>'+
+ '<div class="f"><label for="s-cur">'+t("cur")+'</label><select id="s-cur">'+opts(curOpts(),"BRL")+"</select></div>"+
+ '<div class="f"><label for="s-freq">'+t("freq")+'</label><select id="s-freq">'+opts(freqOpts(),"monthly")+"</select></div>"+
+ '<div class="f"><label for="s-met">'+t("method")+'</label><select id="s-met">'+opts(methOpts(),"pix")+"</select></div></div></section>"+
+ '<section class="card warn"><h2>'+t("consent_t")+'</h2><div class="chk"><input id="s-con" type="checkbox"><label for="s-con">'+t("consent")+"</label></div></section>"+
+ '<div class="acts"><button type="button" class="btn plain" data-a="tab" data-v="sup">'+t("cancel")+'</button><button class="btn" type="submit">'+t("savesup")+"</button></div></form>";
+}
+function offSummary(sid){
+ var s=sup(sid), lo=lastOffer(sid), n=thisMonth().filter(function(o){return o.sid===sid;}).length;
+ return "<h2>"+esc(s.name)+'</h2><div class="facts">'+t("s_commit")+": "+commitTxt(s)+" · "+t("m_"+s.method)+"<br>"+t("s_last")+": "+(lo?dlabel(lo.date):t("never"))+"<br>"+t("s_count")+": "+n+"<br>"+t("s_mail")+": "+t(s.consent?"yes":"no")+"</div>";
+}
+function viewNewOff(){
+ var s0=offSid?sup(offSid):S[0];
+ return '<header><h1>'+t("newoff")+'</h1><div class="sub">'+t("off_sub")+"</div></header>"+
+ '<div class="row top"><form id="f-off" class="card" style="flex:2 1 460px" autocomplete="off">'+
+ '<div class="f"><label for="o-sup">'+t("who")+'</label><select id="o-sup">'+S.map(function(s){return '<option value="'+s.id+'"'+(s.id===s0.id?" selected":"")+">"+esc(s.name)+"</option>";}).join("")+"</select></div>"+
+ '<div class="fr four"><div class="f"><label for="o-date">'+t("date")+'</label><input id="o-date" type="date" value="'+iso(now)+'" required></div>'+
+ '<div class="f"><label for="o-amt">'+t("amount")+'</label><input id="o-amt" inputmode="decimal" value="'+s0.amount+'" required></div>'+
+ '<div class="f"><label for="o-cur">'+t("cur")+'</label><select id="o-cur">'+opts(curOpts(),s0.cur)+"</select></div>"+
+ '<div class="f"><label for="o-met">'+t("method")+'</label><select id="o-met">'+opts(methOpts(),s0.method)+"</select></div></div>"+
+ '<div class="chk" style="align-items:center"><input id="o-prep" type="checkbox" checked><label for="o-prep">'+t("prep")+"</label></div>"+
+ '<div class="acts"><button type="button" class="btn plain" data-a="tab" data-v="'+backTab+'">'+t("cancel")+'</button><button class="btn" type="submit">'+t("saveoff")+"</button></div></form>"+
+ '<aside class="card" id="osum" style="flex:1 1 260px">'+offSummary(s0.id)+"</aside></div>";
+}
+function viewOff(){
+ var rows=O.slice().sort(function(a,b){return a.date<b.date?1:-1;}).map(function(o){
+  var s=sup(o.sid);
+  return "<tr><td>"+dlabel(o.date)+"</td><td>"+esc(s.name)+"</td><td>"+money(o.amount,o.cur)+"</td><td>"+t("m_"+o.method)+'</td><td class="'+(o.thanked?"ok":"no")+'">'+t(o.thanked?"sent":"pending")+"</td><td>"+(o.thanked?"":'<button type="button" class="btn ghost small" data-a="review" data-v="'+o.id+'">'+t("review")+"</button>")+"</td></tr>";
+ }).join("");
+ return '<header class="head"><div><h1>'+t("off")+'</h1><div class="sub">'+O.length+" · "+t("allgifts").toLowerCase()+'</div></div><button type="button" class="btn" data-a="newOff">'+t("newoff")+"</button></header>"+
+ '<section class="card" style="padding-top:8px"><div class="scroll"><table><thead><tr><th>'+t("date")+"</th><th>"+t("who")+"</th><th>"+t("value")+"</th><th>"+t("way")+"</th><th>"+t("thanks")+'</th><th></th></tr></thead><tbody>'+rows+"</tbody></table></div></section>";
+}
+function draftFor(o){
+ var k="t"+o.id;
+ if(drafts[k]===undefined){var s=sup(o.sid);drafts[k]=t("tpl")(s.name,money(o.amount,o.cur),sigText());}
+ return drafts[k];
+}
+function mailHtml(s,txt,subj){
+ return '<span class="h">'+t("from")+": Rafael Duarte\n"+t("to")+": "+esc(s.email)+"\n"+t("subject")+": "+esc(subj)+"</span>"+esc(txt);
+}
+/* cartão de saída: WhatsApp (wa.me), e-mail (mailto:) e copiar. Só o missionário envia, do próprio aparelho. */
+function outCard(s,key,txt,subj,extra){
+ var wa=waHref(s,txt), ok=s.consent;
+ var bWa=ok&&wa?'<a class="btn" id="b-wa" href="'+esc(wa)+'" target="_blank" rel="noopener">'+t("wa_btn")+"</a>":'<button type="button" class="btn" disabled title="'+esc(ok?t("wa_none"):t("noconsent"))+'">'+t("wa_btn")+"</button>";
+ var bMl=ok?'<a class="btn" id="b-mail" href="'+esc(mailHref(s,txt,subj))+'">'+t("mail_btn")+"</a>":'<button type="button" class="btn" disabled title="'+esc(t("noconsent"))+'">'+t("mail_btn")+"</button>";
+ return '<section class="card"><h2>'+t("preview")+'</h2><div class="mail" id="mail">'+mailHtml(s,txt,subj)+"</div>"+
+ (ok?'<div class="ok">'+esc(s.name)+" "+t("ok_consent")+"</div>":'<div class="no">'+t("noconsent")+"</div>")+
+ '<div class="acts left">'+bWa+bMl+'<button type="button" class="btn ghost" data-a="copy">'+t("copy")+"</button>"+(extra||"")+'</div><div class="note">'+t("wa_hint")+"</div></section>";
+}
+function modeBlock(){
+ return '<fieldset style="border:0;padding:0;margin:0;display:flex;flex-direction:column;gap:10px"><legend style="padding:0;margin-bottom:10px;font-size:14px;font-weight:600">'+t("mode")+"</legend>"+
+ '<div class="opt"><input type="radio" id="m-auto" name="mode" value="auto"'+(mode==="auto"?" checked":"")+'><label for="m-auto"><b>'+t("auto")+"</b><small>"+t("auto_d")+"</small></label></div>"+
+ '<div class="opt"><input type="radio" id="m-sug" name="mode" value="sug"'+(mode==="sug"?" checked":"")+'><label for="m-sug"><b>'+t("sug")+"</b><small>"+t("sug_d")+"</small></label></div></fieldset>";
+}
+function msgBox(key,sid,subj,txt,withVars){
+ return '<div class="f"><label for="msg">'+t("message")+'</label><textarea id="msg" rows="9" data-key="'+esc(key)+'" data-sid="'+sid+'" data-subj="'+esc(subj)+'">'+esc(txt)+"</textarea></div>"+
+ (withVars?'<div class="chips" style="align-items:center;font-size:13px;color:var(--mute)">'+t("vars")+'<span class="var">{nome}</span><span class="var">{valor}</span><span class="var">{data}</span></div>':"");
+}
+function viewThx(){
+ var pend=pendingList();
+ if(!pend.some(function(o){return o.id===sel;}))sel=pend.length?pend[0].id:null;
+ var back='<button type="button" class="back" data-a="tab" data-v="home">'+t("back_dash")+"</button>";
+ if(!sel){return "<header>"+back+'<h1 style="margin-top:8px">'+t("thx")+'</h1></header><section class="card"><div>'+t("nopick")+'</div><div class="acts left"><button type="button" class="btn" data-a="newOff">'+t("newoff")+"</button></div></section>";}
+ var o=O.filter(function(x){return x.id===sel;})[0], s=sup(o.sid), txt=draftFor(o), key="t"+o.id;
+ var chips=pend.length>1?'<div class="chips" role="group" aria-label="'+esc(t("pend"))+'">'+pend.map(function(p){return '<button type="button" class="chip" data-a="review" data-v="'+p.id+'" aria-pressed="'+(p.id===sel)+'">'+esc(sup(p.sid).name)+"</button>";}).join("")+"</div>":"";
+ return "<header>"+back+'<h1 style="margin-top:8px">'+t("thank")+esc(s.name)+'</h1><div class="sub">'+money(o.amount,o.cur)+" · "+t("m_"+o.method)+" · "+dlabel(o.date)+"</div></header>"+chips+
+ '<div class="row top"><section class="card">'+modeBlock()+msgBox(key,s.id,t("subj"),txt,true)+"</section>"+
+ outCard(s,key,txt,t("subj"),'<button type="button" class="btn plain" data-a="mark">'+t("mark")+"</button>")+"</div>";
+}
+function careDraft(i,s){
+ var k="c"+i.key;
+ if(drafts[k]===undefined)drafts[k]=i.kind==="bday"?t("tpl_bday")(s.name,sigText()):t("tpl_anniv")(s.name,t("ytxt")(i.years),sigText());
+ return drafts[k];
+}
+function viewCare(){
+ var i=careItems(true).filter(function(x){return x.key===careSel;})[0];
+ if(!i){return viewHome();}
+ var s=sup(i.sid), txt=careDraft(i,s), subj=t(i.kind==="bday"?"care_subj_bday":"care_subj_anniv"), key="c"+i.key;
+ return '<header><button type="button" class="back" data-a="tab" data-v="home">'+t("back_dash")+'</button><h1 style="margin-top:8px">'+t("care_h")+esc(s.name)+'</h1><div class="sub">'+t("care_sub")+" · "+esc(careLabel(i))+"</div></header>"+
+ '<div class="row top"><section class="card">'+msgBox(key,s.id,subj,txt,false)+"</section>"+
+ outCard(s,key,txt,subj,'<button type="button" class="btn plain" data-a="cdone" data-v="'+esc(i.key)+'">'+t("care_done")+"</button>")+"</div>";
+}
+
+/* importar da planilha */
+function splitLine(l,d){
+ var r=[],cur="",q=false,i,ch;
+ for(i=0;i<l.length;i++){
+  ch=l.charAt(i);
+  if(q){if(ch==='"'){if(l.charAt(i+1)==='"'){cur+='"';i++;}else q=false;}else cur+=ch;}
+  else if(ch==='"')q=true;
+  else if(ch===d){r.push(cur.trim());cur="";}
+  else cur+=ch;
+ }
+ r.push(cur.trim());return r;
+}
+function parseTable(text){
+ var lines=text.replace(/\r/g,"").split("\n").filter(function(l){return l.trim();});
+ if(!lines.length)return [];
+ var best="\t",bn=-1;
+ ["\t",";",","].forEach(function(d){var n=lines[0].split(d).length-1;if(n>bn){bn=n;best=d;}});
+ var rows=lines.map(function(l){return splitLine(l,best);});
+ if(/^(nome|name)$/i.test(rows[0][0]))rows.shift();
+ return rows;
+}
+function parseAmount(v){
+ v=String(v||"").replace(/[^\d.,]/g,"");if(!v)return 0;
+ var lc=v.lastIndexOf(","),ld=v.lastIndexOf(".");
+ if(lc>-1&&ld>-1){v=lc>ld?v.replace(/\./g,"").replace(",","."):v.replace(/,/g,"");}
+ else if(lc>-1){v=v.replace(",",".");}
+ else if(/^\d{1,3}(\.\d{3})+$/.test(v)){v=v.replace(/\./g,"");}
+ var n=parseFloat(v);return isFinite(n)&&n>0?n:0;
+}
+function normCur(v){
+ var m={"R$":"BRL","BRL":"BRL","REAL":"BRL","REAIS":"BRL","US$":"USD","USD":"USD","$":"USD","DOLAR":"USD","DÓLAR":"USD","EUR":"EUR","€":"EUR","EURO":"EUR"};
+ return m[String(v||"").toUpperCase().replace(/\s/g,"")]||"";
+}
+function normFreq(v){
+ var m={"mensal":"monthly","monthly":"monthly","mes":"monthly","mês":"monthly","trimestral":"quarterly","quarterly":"quarterly","anual":"yearly","yearly":"yearly","annual":"yearly","pontual":"once","única":"once","unica":"once","once":"once","one-time":"once"};
+ return m[String(v||"").toLowerCase().trim()]||"";
+}
+function impRows(){
+ var seen={};S.forEach(function(s){seen[s.email.toLowerCase()]=1;});
+ return parseTable(impText).map(function(c,k){
+  var r={n:k+1,name:c[0]||"",email:c[1]||"",wa:c[2]||"",amountRaw:c[3]||"",cur:normCur(c[4]),curRaw:c[4]||"",freq:normFreq(c[5]),freqRaw:c[5]||"",errs:[]};
+  r.amount=parseAmount(r.amountRaw);
+  if(!r.name)r.errs.push("e_name");
+  if(!r.email&&!r.wa)r.errs.push("e_contact");
+  if(r.email&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(r.email))r.errs.push("e_email");
+  if(r.wa&&!waDigits(r.wa))r.errs.push("e_wa");
+  if(!r.amount)r.errs.push("e_amount");
+  if(!r.cur)r.errs.push("e_cur");
+  if(!r.freq)r.errs.push("e_freq");
+  if(r.email&&!r.errs.length){var e=r.email.toLowerCase();if(seen[e])r.errs.push("e_dup");else seen[e]=1;}
+  return r;
+ });
+}
+function impPreview(){
+ var rows=impRows();
+ if(!rows.length)return '<div class="note">'+t("imp_empty")+"</div>";
+ var v=rows.filter(function(r){return !r.errs.length;}).length;
+ return '<div class="'+(v===rows.length?"ok":"no")+'">'+t("imp_valid").replace("{v}",v).replace("{e}",rows.length-v)+'</div><div class="scroll"><table><thead><tr><th>#</th><th>'+t("name")+"</th><th>"+t("email")+"</th><th>WhatsApp</th><th>"+t("value")+"</th><th>"+t("cur")+"</th><th>"+t("freq")+"</th><th>"+t("imp_status")+"</th></tr></thead><tbody>"+
+ rows.map(function(r){
+  var bad=r.errs.length;
+  return '<tr class="'+(bad?"bad":"")+'"><td>'+r.n+"</td><td>"+esc(r.name)+"</td><td>"+esc(r.email)+"</td><td>"+esc(r.wa)+"</td><td>"+esc(r.amountRaw)+"</td><td>"+esc(r.curRaw)+"</td><td>"+esc(r.freqRaw)+'</td><td class="'+(bad?"no":"ok")+'">'+(bad?"⚠ "+esc(r.errs.map(t).join("; ")):"✓ "+t("imp_ok"))+"</td></tr>";
+ }).join("")+"</tbody></table></div>";
+}
+function impValidN(){return impRows().filter(function(r){return !r.errs.length;}).length;}
+function impBtnState(){
+ var b=document.getElementById("imp-btn");if(!b)return;
+ var n=impValidN();b.textContent=t("imp_btn").replace("{n}",n);b.disabled=!(n>0&&impConsent);
+}
+function impUpdate(){var p=document.getElementById("imp-prev");if(p)p.innerHTML=impPreview();impBtnState();}
+var SAMPLE=["nome;e-mail;WhatsApp;valor;moeda;frequência",
+ "Beatriz Campos;beatriz@exemplo.com;+55 44 90000-0101;100;BRL;mensal",
+ "Daniel Reis;daniel@exemplo.com;44 90000-0102;75,50;BRL;mensal",
+ "Comunidade Vida Nova;vidanova@exemplo.com;;300;BRL;trimestral",
+ "Grace Miller;grace@exemplo.com;+1 555 010 0103;25;USD;mensal",
+ "Henri Martin;henri@exemplo;;30;EUR;mensal",
+ "Joana Sem Valor;joana@exemplo.com;;;BRL;mensal",
+ "Pedro Lima;pedro@exemplo.com;+55 44 90000-0105;50;XYZ;mensal",
+ "Helena Prado;helena@exemplo.com;;150;BRL;mensal"].join("\n");
+function viewImp(){
+ return '<header><h1>'+t("imp_t")+'</h1><div class="sub">'+t("imp_sub")+"</div></header>"+
+ '<section class="card"><div class="note">'+t("imp_cols")+'</div><div class="f"><label for="imp-text">'+t("imp_lbl")+'</label><textarea id="imp-text" rows="8" spellcheck="false" placeholder="'+esc(t("imp_ph"))+'">'+esc(impText)+"</textarea></div>"+
+ '<div class="acts left"><button type="button" class="btn ghost small" data-a="impEx">'+t("imp_ex")+'</button><button type="button" class="btn plain small" data-a="impClear">'+t("imp_clear")+"</button></div></section>"+
+ '<section class="card"><h2>'+t("imp_prev")+'</h2><div id="imp-prev" style="display:flex;flex-direction:column;gap:12px">'+impPreview()+"</div></section>"+
+ '<section class="card warn"><h2>'+t("consent_t")+'</h2><div class="chk"><input id="imp-con" type="checkbox"'+(impConsent?" checked":"")+'><label for="imp-con">'+t("imp_consent")+'</label></div><div class="note">'+t("imp_only")+"</div>"+
+ '<div class="acts left"><button type="button" class="btn" id="imp-btn" data-a="import" disabled>'+t("imp_btn").replace("{n}",impValidN())+"</button></div></section>";
+}
+
+/* relatório mensal imprimível */
+function viewRep(){
+ var tm=thisMonth().sort(function(a,b){return a.date<b.date?-1:1;}), tc=totalsByCur();
+ var mname=now.toLocaleDateString(loc(),{month:"long",year:"numeric"});
+ var tiles=CURS.filter(function(c){return tc[c].rec>0||tc[c].plan>0;}).map(function(c){
+  return '<div><div class="k">'+c+'</div><div class="v">'+money(tc[c].rec,c)+'</div><div class="n">'+t("planned")+": "+money(tc[c].plan,c)+"</div></div>";
+ }).join("");
+ var tables=CURS.map(function(c){
+  var l=tm.filter(function(o){return o.cur===c;});if(!l.length)return "";
+  return '<div style="display:flex;flex-direction:column;gap:8px"><h3>'+c+' · '+l.length+" "+t("rep_count")+'</h3><div class="scroll"><table><thead><tr><th>'+t("date")+"</th><th>"+t("who")+"</th><th>"+t("way")+"</th><th>"+t("value")+"</th></tr></thead><tbody>"+
+  l.map(function(o){return "<tr><td>"+dlabel(o.date)+"</td><td>"+esc(sup(o.sid).name)+"</td><td>"+t("m_"+o.method)+"</td><td>"+money(o.amount,c)+"</td></tr>";}).join("")+
+  '<tr class="sum"><td colspan="3">'+t("rep_sub_t")+" "+c+"</td><td>"+money(tc[c].rec,c)+"</td></tr></tbody></table></div></div>";
+ }).join("");
+ var got={};tm.forEach(function(o){(got[o.sid]=got[o.sid]||[]).push(money(o.amount,o.cur));});
+ var list=S.map(function(s){
+  var st=got[s.id]?'<span class="ok">'+t("rep_recv")+" · "+esc(got[s.id].join(", "))+"</span>":s.freq==="monthly"?'<span class="no">'+t("rep_miss")+"</span>":t("rep_na");
+  return "<tr><td style=\"font-weight:600\">"+esc(s.name)+"</td><td>"+commitTxt(s)+"</td><td>"+(s.since?esc(new Date(+s.since.slice(0,4),+s.since.slice(5,7)-1,1).toLocaleDateString(loc(),{month:"short",year:"numeric"})):t("rep_na"))+"</td><td>"+st+"</td></tr>";
+ }).join("");
+ return '<header class="head"><div><h1>'+t("rep_t")+'</h1><div class="sub">'+t("rep_sub")+esc(mname)+'</div><div class="note">'+t("rep_by")+"Rafael Duarte · "+t("rep_gen")+esc(now.toLocaleDateString(loc(),{day:"numeric",month:"long",year:"numeric"}))+'</div></div><button type="button" class="btn noprint" data-a="print">'+t("rep_print")+"</button></header>"+
+ '<section style="display:flex;flex-direction:column;gap:12px"><h2>'+t("rep_total")+'</h2><div class="stats">'+tiles+'</div><div class="note">'+t("rep_note")+"</div></section>"+
+ '<section class="card"><h2>'+t("rep_gifts")+"</h2>"+(tables||'<div class="note">'+t("rep_none")+"</div>")+"</section>"+
+ '<section class="card"><h2>'+t("rep_list")+'</h2><div class="scroll"><table><thead><tr><th>'+t("name")+"</th><th>"+t("commit")+"</th><th>"+t("since_c")+"</th><th>"+t("rep_status")+"</th></tr></thead><tbody>"+list+"</tbody></table></div></section>";
+}
+
+function dowName(i){return new Date(2024,0,7+i).toLocaleDateString(loc(),{weekday:"long"});}
+function wkMail(){
+ var logged={};thisMonth().forEach(function(o){logged[o.sid]=1;});
+ var exp=S.filter(function(s){return s.freq==="monthly"&&!logged[s.id];}).length;
+ var txt=t("wk")(exp,pendingList().length,careItems().length);
+ return '<span class="h">'+t("from")+": "+esc(t("weekly_from"))+"\n"+t("to")+": rafael@exemplo.com\n"+t("subject")+": "+esc(t("weekly_subj"))+"</span>"+esc(txt);
+}
+function wkState(){return wk.on?t("weekly_on").replace("{d}",dowName(wk.day)):t("weekly_off");}
+function viewSet(){
+ return '<header><h1>'+t("set")+"</h1></header>"+
+ '<section class="card"><h2>'+t("prof")+'</h2><div class="fr"><div class="f"><label for="pn">'+t("name")+'</label><input id="pn" value="Rafael Duarte"></div><div class="f"><label for="pe">'+t("sendmail")+'</label><input id="pe" type="email" value="rafael@exemplo.com"></div>'+
+ '<div class="f"><label for="pi">'+t("lang_l")+'</label><select id="pi"><option value="pt"'+(lang==="pt"?" selected":"")+'>Português</option><option value="en"'+(lang==="en"?" selected":"")+">English</option></select></div></div></section>"+
+ '<section class="card"><h2>'+t("weekly_t")+'</h2><div class="chk" style="align-items:center"><input id="wk-on" type="checkbox"'+(wk.on?" checked":"")+'><label for="wk-on">'+t("weekly_chk")+'</label></div>'+
+ '<div class="fr goal"><div class="f"><label for="wk-day">'+t("weekly_day")+'</label><select id="wk-day">'+opts([0,1,2,3,4,5,6].map(function(i){return [i,dowName(i)];}),wk.day)+"</select></div></div>"+
+ '<div class="note" id="wk-state">'+esc(wkState())+'</div><h3>'+t("weekly_prev")+'</h3><div class="mail">'+wkMail()+"</div></section>"+
+ '<section class="card"><h2>'+t("thx_set")+'</h2><fieldset style="border:0;padding:0;margin:0;display:flex;flex-wrap:wrap;gap:24px"><legend style="padding:0;margin-bottom:10px;font-size:14px;font-weight:600">'+t("defmode")+"</legend>"+
+ '<div class="chk" style="align-items:center"><input id="d-auto" name="mode" type="radio" value="auto"'+(mode==="auto"?" checked":"")+'><label for="d-auto">'+t("auto")+"</label></div>"+
+ '<div class="chk" style="align-items:center"><input id="d-sug" name="mode" type="radio" value="sug"'+(mode==="sug"?" checked":"")+'><label for="d-sug">'+t("defsug")+"</label></div></fieldset>"+
+ '<div class="f"><label for="sig">'+t("sign")+'</label><textarea id="sig" rows="2">'+esc(sigText())+"</textarea></div></section>"+
+ '<section class="card"><h2>'+t("priv")+'</h2><div style="color:var(--mute);line-height:1.6">'+t("priv_p")+'</div><div class="acts left"><button type="button" class="btn plain" disabled title="'+esc(t("nopro"))+'">'+t("export")+'</button><button type="button" class="btn plain" disabled title="'+esc(t("nopro"))+'">'+t("consent_txt")+"</button></div></section>"+
+ '<section class="card"><h2>'+t("plan")+'</h2><div style="color:var(--mute)">'+t("plan_p")+'</div></section>'+
+ '<div class="acts left"><button type="button" class="btn ghost small" data-a="reset">'+t("reset")+"</button></div>";
+}
+function render(){
+ renderChrome();
+ var v=document.getElementById("view");
+ var views={home:viewHome,sup:viewSup,off:viewOff,thx:viewThx,imp:viewImp,rep:viewRep,set:viewSet,newSup:viewNewSup,newOff:viewNewOff,care:viewCare};
+ v.innerHTML=views[tab]();
+}
+function go(name){if(name!=="newSup"&&name!=="newOff"&&name!=="care")backTab=name;tab=name;render();window.scrollTo(0,0);}
+function toast(m){
+ var el=document.getElementById("toast");el.textContent=m;el.hidden=false;
+ clearTimeout(toast.tm);toast.tm=setTimeout(function(){el.hidden=true;},3200);
+}
+function num(v){var n=parseFloat(String(v).replace(",","."));return isFinite(n)&&n>0?n:0;}
+document.addEventListener("click",function(e){
+ var b=e.target.closest("[data-a]");if(!b)return;
+ var a=b.getAttribute("data-a"), v=b.getAttribute("data-v");
+ if(a==="tab"){go(v);}
+ else if(a==="lang"){lang=v;render();}
+ else if(a==="reset"){seed();filter="";go("home");toast(t("reset_ok"));}
+ else if(a==="newSup"){go("newSup");}
+ else if(a==="newOff"){offSid=v?+v:null;go("newOff");}
+ else if(a==="review"){sel=+v;go("thx");}
+ else if(a==="care"){careSel=v;go("care");}
+ else if(a==="cdone"){done[v]=true;toast(t("care_done_ok"));go("home");}
+ else if(a==="copy"){
+  var ta=document.getElementById("msg");
+  var fail=function(){ta.focus();ta.select();toast(t("copyfail"));};
+  try{navigator.clipboard.writeText(ta.value).then(function(){toast(t("copied"));},fail);}catch(err){fail();}
+ }
+ else if(a==="mark"){
+  O.forEach(function(o){if(o.id===sel)o.thanked=true;});
+  toast(t("sentdemo"));render();
+ }
+ else if(a==="impEx"){impText=SAMPLE;document.getElementById("imp-text").value=impText;impUpdate();}
+ else if(a==="impClear"){impText="";document.getElementById("imp-text").value="";impUpdate();}
+ else if(a==="import"){
+  var rows=impRows(), ok=rows.filter(function(r){return !r.errs.length;});
+  if(!ok.length||!impConsent)return;
+  ok.forEach(function(r){S.push({id:++uid,name:r.name,email:r.email,wa:r.wa,amount:r.amount,cur:r.cur,freq:r.freq,method:"pix",consent:true});});
+  var skipped=rows.length-ok.length;
+  impText="";impConsent=false;filter="";go("sup");toast(t("imp_done").replace("{n}",ok.length).replace("{m}",skipped));
+ }
+ else if(a==="print"){window.print();}
+});
+document.addEventListener("input",function(e){
+ var el=e.target;
+ if(el.id==="q"){filter=el.value;document.getElementById("rows").innerHTML=supRows();}
+ else if(el.id==="msg"){
+  var s=sup(+el.getAttribute("data-sid")), subj=el.getAttribute("data-subj");
+  drafts[el.getAttribute("data-key")]=el.value;
+  document.getElementById("mail").innerHTML=mailHtml(s,el.value,subj);
+  var w=document.getElementById("b-wa"), m=document.getElementById("b-mail");
+  if(w)w.setAttribute("href",waHref(s,el.value));
+  if(m)m.setAttribute("href",mailHref(s,el.value,subj));
+ }
+ else if(el.id==="sig"){sigCustom=el.value;drafts={};}
+ else if(el.id==="imp-text"){impText=el.value;impUpdate();}
+});
+document.addEventListener("change",function(e){
+ var el=e.target;
+ if(el.name==="mode"){mode=el.value;}
+ else if(el.id==="pi"){lang=el.value;render();}
+ else if(el.id==="imp-con"){impConsent=el.checked;impBtnState();}
+ else if(el.id==="goal-amt"||el.id==="goal-cur"){
+  goal.amt=num(document.getElementById("goal-amt").value);goal.cur=document.getElementById("goal-cur").value;render();
+ }
+ else if(el.id==="wk-on"||el.id==="wk-day"){
+  wk.on=document.getElementById("wk-on").checked;wk.day=+document.getElementById("wk-day").value;
+  document.getElementById("wk-state").textContent=wkState();
+ }
+ else if(el.id==="o-sup"){
+  var s=sup(+el.value);
+  document.getElementById("o-amt").value=s.amount;document.getElementById("o-cur").value=s.cur;document.getElementById("o-met").value=s.method;
+  document.getElementById("osum").innerHTML=offSummary(s.id);
+ }
+});
+document.addEventListener("submit",function(e){
+ e.preventDefault();
+ var id=e.target.id;
+ if(id==="f-sup"){
+  var n=document.getElementById("s-name").value.trim(), em=document.getElementById("s-email").value.trim();
+  if(!n||!em)return;
+  S.push({id:++uid,name:n,email:em,wa:document.getElementById("s-wa").value.trim(),bday:document.getElementById("s-bday").value||"",since:document.getElementById("s-since").value||"",amount:num(document.getElementById("s-amt").value),cur:document.getElementById("s-cur").value,freq:document.getElementById("s-freq").value,method:document.getElementById("s-met").value,consent:document.getElementById("s-con").checked});
+  filter="";go("sup");toast(t("saved_sup"));
+ } else if(id==="f-off"){
+  var amt=num(document.getElementById("o-amt").value);if(!amt)return;
+  var sid=+document.getElementById("o-sup").value, prep=document.getElementById("o-prep").checked;
+  O.push({id:++uid,sid:sid,date:document.getElementById("o-date").value||iso(now),amount:amt,cur:document.getElementById("o-cur").value,method:document.getElementById("o-met").value,thanked:false});
+  if(prep){sel=uid;go("thx");}else{go(backTab==="thx"?"thx":"off");}
+  toast(t("saved_off"));
+ }
+});
+try{if(navigator.language&&navigator.language.toLowerCase().indexOf("pt")!==0)lang="en";}catch(e){}
+seed();render();
+})();
+</script>
+</body>
+</html>
