@@ -34,12 +34,15 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);font
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--side)}
 .app{display:flex;flex-wrap:wrap;align-content:flex-start;min-height:100vh;max-width:100%}
 aside.side{flex:0 0 248px;align-self:stretch;min-width:0;max-width:100%;background:var(--side);color:var(--side-ink);display:flex;flex-direction:column;gap:28px;padding-top:calc(28px + env(safe-area-inset-top,0px));padding-bottom:calc(28px + env(safe-area-inset-bottom,0px));padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:16px}
-.brand{padding:0 12px}
+.bar{display:flex;align-items:center;gap:8px}
+.drawer{flex:1 1 auto;display:flex;flex-direction:column;gap:28px;min-width:0}
+.brand{padding:0 12px;flex:1 1 auto;min-width:0}
+.quick,.burger{display:none}
 .brand b{display:block;font-size:22px;font-weight:700}
 .brand span{font-size:13px;color:var(--side-mute)}
 nav.menu{display:flex;flex-direction:column;gap:4px;min-width:0;max-width:100%}
 nav.menu button{display:block;width:100%;text-align:left;border:0;background:transparent;color:var(--side-mute);font:inherit;padding:10px 12px;border-radius:8px;cursor:pointer}
-nav.menu button[aria-current="page"]{background:var(--side-hl);color:var(--side-ink);font-weight:600}
+nav.menu button[aria-current="page"],.quick[aria-current="page"]{background:var(--side-hl);color:var(--side-ink);font-weight:600}
 .count{display:inline-block;min-width:20px;margin-left:8px;padding:0 6px;border-radius:10px;background:var(--warn-bg);color:var(--warn);font-size:12px;text-align:center;font-weight:600}
 .userbox{margin-top:auto;padding:0 12px;display:flex;flex-direction:column;gap:8px;font-size:13px;color:var(--side-mute)}
 .userbox b{color:var(--side-ink);font-size:15px}
@@ -51,11 +54,19 @@ main{flex:999 1 min(100%,560px);min-width:0;display:flex;flex-direction:column;g
 @media (min-width:808px){main{padding-top:calc(32px + env(safe-area-inset-top,0px))}}
 @media (min-width:900px){main{padding-left:40px;padding-right:max(40px,env(safe-area-inset-right,0px))}}
 @media (max-width:807px){
-  aside.side{flex-basis:100%;gap:10px;padding-top:calc(12px + env(safe-area-inset-top,0px));padding-bottom:12px;padding-right:max(16px,env(safe-area-inset-right,0px))}
-  nav.menu{flex-direction:row;overflow-x:auto;width:100%}
+  aside.side{flex-basis:100%;gap:0;padding-top:calc(12px + env(safe-area-inset-top,0px));padding-bottom:12px;padding-right:max(16px,env(safe-area-inset-right,0px))}
+  .brand{padding:0 4px}
   .brand b{font-size:20px}
-  nav.menu button{width:auto;white-space:nowrap}
-  .userbox{margin-top:0;flex-direction:row;flex-wrap:wrap;align-items:center;gap:8px 12px}
+  .quick{display:block;border:0;background:transparent;color:var(--side-mute);font:inherit;padding:10px 12px;min-height:44px;border-radius:8px;cursor:pointer}
+  .burger{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;padding:0;border:1px solid rgba(255,255,255,.35);border-radius:8px;background:transparent;color:var(--side-ink);cursor:pointer}
+  .burger svg{width:22px;height:22px}
+  .burger .x{display:none}
+  aside.side.open .burger .x{display:block}
+  aside.side.open .burger .b{display:none}
+  .drawer{display:none;gap:12px;padding-top:12px}
+  aside.side.open .drawer{display:flex}
+  nav.menu .m-home{display:none}
+  .userbox{margin-top:0;flex-direction:row;flex-wrap:wrap;align-items:center;gap:8px 12px;padding-top:8px;border-top:1px solid var(--side-hl)}
   .userbox .who{display:none}
 }
 h1{margin:0;font-size:28px;line-height:1.2;font-weight:700;text-wrap:balance}
@@ -161,7 +172,15 @@ input[type=checkbox],input[type=radio]{width:20px;height:20px;min-height:0;paddi
 
 <div class="app">
   <aside class="side">
-    <div class="brand"><b>Sustento</b><span id="sub"></span></div>
+    <div class="bar">
+      <div class="brand"><b>Sustento</b><span id="sub"></span></div>
+      <button type="button" class="quick" id="quick" data-a="tab" data-v="home"></button>
+      <button type="button" class="burger" id="burger" data-a="burger" aria-expanded="false" aria-controls="drawer" aria-label="Menu">
+        <svg class="b" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        <svg class="x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </div>
+    <div class="drawer" id="drawer">
     <nav class="menu" id="menu" aria-label="Seções"></nav>
     <div class="userbox">
       <span class="tag" id="badge"></span>
@@ -171,6 +190,7 @@ input[type=checkbox],input[type=radio]{width:20px;height:20px;min-height:0;paddi
         <button type="button" data-a="lang" data-v="en" id="l-en">EN</button>
       </div>
     </div>
+    </div>
   </aside>
   <main id="view"></main>
 </div>
@@ -179,10 +199,10 @@ input[type=checkbox],input[type=radio]{width:20px;height:20px;min-height:0;paddi
 <script>
 (function(){
 "use strict";
-var FEEDBACK_URL = "https://tally.so/r/bZVNZZ"; /* formulário de pré-cadastro (Tally); vazio = botão oculto. Só funciona depois de publicado. */
+var FEEDBACK_URL = "https://tally.so/r/rDy2AM"; /* formulário de pré-cadastro (Tally); vazio = botão oculto. Só funciona depois de publicado. */
 var I = {
  pt:{sub:"nome provisório",badge:"Protótipo · dados de exemplo",role:"Missionário",reset:"Restaurar exemplo",
-  home:"Painel",sup:"Mantenedores",off:"Ofertas",thx:"Agradecimentos",imp:"Importar",rep:"Relatório",set:"Configurações",
+  menu_open:"Abrir menu",menu_close:"Fechar menu",home:"Painel",sup:"Mantenedores",off:"Ofertas",thx:"Agradecimentos",imp:"Importar",rep:"Relatório",set:"Configurações",
   gm:"Bom dia",ga:"Boa tarde",gn:"Boa noite",summary:"Resumo de ",
   intro_t:"Protótipo para você testar",intro_p:"Tudo aqui é de exemplo; nada é salvo nem enviado pelo sistema. Experimente registrar uma oferta, abrir o agradecimento que nasce dela, importar uma planilha e cadastrar um mantenedor novo.",
   intro_b:"Depois de testar, conte o que faltou ou o que não faria diferença para você.",feedback:"Quero testar quando estiver pronto",
@@ -225,7 +245,7 @@ var I = {
   tpl_bday:function(n,sig){return "Olá, "+n+"!\n\nPassei para te desejar um feliz aniversário. Que Deus abençoe o seu novo ano de vida! Obrigado por caminhar comigo e por tornar este chamado possível.\n\n"+sig;},
   tpl_anniv:function(n,y,sig){return "Olá, "+n+"!\n\nNesta semana completamos "+y+". Quero agradecer a sua fidelidade: cada mês de apoio sustenta o trabalho que Deus me confiou.\n\n"+sig;}},
  en:{sub:"working name",badge:"Prototype · sample data",role:"Missionary",reset:"Reset sample",
-  home:"Dashboard",sup:"Supporters",off:"Gifts",thx:"Thank-yous",imp:"Import",rep:"Report",set:"Settings",
+  menu_open:"Open menu",menu_close:"Close menu",home:"Dashboard",sup:"Supporters",off:"Gifts",thx:"Thank-yous",imp:"Import",rep:"Report",set:"Settings",
   gm:"Good morning",ga:"Good afternoon",gn:"Good evening",summary:"Summary for ",
   intro_t:"A prototype for you to try",intro_p:"Everything here is sample data; nothing is saved or sent by the system. Try logging a gift, opening the thank-you it creates, importing a spreadsheet and adding a new supporter.",
   intro_b:"After trying it, tell us what was missing or what would not matter to you.",feedback:"I want to try it when it is ready",
@@ -269,7 +289,7 @@ var I = {
   tpl_anniv:function(n,y,sig){return "Hello "+n+"!\n\nThis week we complete "+y+". I want to thank you for your faithfulness: every month of support sustains the work God entrusted to me.\n\n"+sig;}}
 };
 var lang="pt", tab="home", backTab="home", sel=null, drafts={}, mode="sug", uid=100, S=[], O=[], filter="", offSid=null, sigCustom=null;
-var goal={amt:3000,cur:"BRL"}, wk={on:false,day:1}, done={}, careSel=null, impText="", impConsent=false;
+var menuOpen=false, goal={amt:3000,cur:"BRL"}, wk={on:false,day:1}, done={}, careSel=null, impText="", impConsent=false;
 var now=new Date(), ym=now.getFullYear()*12+now.getMonth(), today0=new Date(now.getFullYear(),now.getMonth(),now.getDate());
 var CURS=["BRL","USD","EUR"];
 function t(k){return I[lang][k]!==undefined?I[lang][k]:k;}
@@ -377,9 +397,15 @@ function renderChrome(){
  document.getElementById("l-pt").setAttribute("aria-pressed",lang==="pt");
  document.getElementById("l-en").setAttribute("aria-pressed",lang==="en");
  var pc=pendingList().length, nk=navKey();
+ var side=document.querySelector("aside.side");
+ side.classList.toggle("open",menuOpen);
+ document.getElementById("burger").setAttribute("aria-expanded",menuOpen);
+ document.getElementById("burger").setAttribute("aria-label",t(menuOpen?"menu_close":"menu_open"));
+ var q=document.getElementById("quick");q.textContent=t("home");
+ if(nk==="home")q.setAttribute("aria-current","page");else q.removeAttribute("aria-current");
  var items=[["home",t("home")],["sup",t("sup")],["off",t("off")],["thx",t("thx")],["imp",t("imp")],["rep",t("rep")],["set",t("set")]];
  document.getElementById("menu").innerHTML=items.map(function(x){
-  return '<button type="button" data-a="tab" data-v="'+x[0]+'"'+(nk===x[0]?' aria-current="page"':"")+">"+x[1]+(x[0]==="thx"&&pc?'<span class="count">'+pc+"</span>":"")+"</button>";
+  return '<button type="button"'+(x[0]==="home"?' class="m-home"':"")+' data-a="tab" data-v="'+x[0]+'"'+(nk===x[0]?' aria-current="page"':"")+">"+x[1]+(x[0]==="thx"&&pc?'<span class="count">'+pc+"</span>":"")+"</button>";
  }).join("");
 }
 function greet(){var h=now.getHours();return t(h<12?"gm":h<18?"ga":"gn");}
@@ -685,7 +711,7 @@ function render(){
  var views={home:viewHome,sup:viewSup,off:viewOff,thx:viewThx,imp:viewImp,rep:viewRep,set:viewSet,newSup:viewNewSup,newOff:viewNewOff,care:viewCare};
  v.innerHTML=views[tab]();
 }
-function go(name){if(name!=="newSup"&&name!=="newOff"&&name!=="care")backTab=name;tab=name;render();window.scrollTo(0,0);}
+function go(name){menuOpen=false;if(name!=="newSup"&&name!=="newOff"&&name!=="care")backTab=name;tab=name;render();window.scrollTo(0,0);}
 function toast(m){
  var el=document.getElementById("toast");el.textContent=m;el.hidden=false;
  clearTimeout(toast.tm);toast.tm=setTimeout(function(){el.hidden=true;},3200);
@@ -695,6 +721,7 @@ document.addEventListener("click",function(e){
  var b=e.target.closest("[data-a]");if(!b)return;
  var a=b.getAttribute("data-a"), v=b.getAttribute("data-v");
  if(a==="tab"){go(v);}
+ else if(a==="burger"){menuOpen=!menuOpen;renderChrome();}
  else if(a==="lang"){lang=v;render();}
  else if(a==="reset"){seed();filter="";go("home");toast(t("reset_ok"));}
  else if(a==="newSup"){go("newSup");}
@@ -721,6 +748,12 @@ document.addEventListener("click",function(e){
   impText="";impConsent=false;filter="";go("sup");toast(t("imp_done").replace("{n}",ok.length).replace("{m}",skipped));
  }
  else if(a==="print"){window.print();}
+});
+document.addEventListener("keydown",function(e){
+ if(e.key==="Escape"&&menuOpen){menuOpen=false;renderChrome();document.getElementById("burger").focus();}
+});
+document.addEventListener("click",function(e){
+ if(menuOpen&&!e.target.closest("aside.side")){menuOpen=false;renderChrome();}
 });
 document.addEventListener("input",function(e){
  var el=e.target;
